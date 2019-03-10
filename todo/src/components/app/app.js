@@ -28,10 +28,10 @@ export default class App extends Component {
     });
   }
 
-  addItem = () => {
+  addItem = (text) => {
     this.setState(({ todoData }) => {
       const data = [...todoData];
-      data.push({ label: 'Added item', done: false, important: false, id: todoData.length + 1 })
+      data.push({ label: text, done: false, important: false, id: todoData.length + 1 })
       return { todoData: data }
     });
   }
