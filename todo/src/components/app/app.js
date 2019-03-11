@@ -67,11 +67,11 @@ export default class App extends Component {
   }
 
   setFilter = (filter) => {
-    this.setState({ filter: filter });
+    this.setState({ filter });
   }
 
   onTermChange = (term) => {
-    this.setState({ term: term });
+    this.setState({ term });
   }
 
   onToggleDone = (id) => {
