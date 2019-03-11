@@ -15,7 +15,9 @@ export default class App extends Component {
       { label: 'Drink Coffee', done: false, important: false, id: 1 },
       { label: 'Make Awesome App', done: false, important: false, id: 2 },
       { label: 'Have a lunch', done: false, important: false, id: 3 }
-    ]
+    ],
+    term: '',
+    filter: 'all'
   };
 
   deleteItem = (id) => {
@@ -37,13 +39,43 @@ export default class App extends Component {
   }
 
   onToggleImportant = (id) => {
-    this.setState(({todoData}) => {
+    this.setState(({ todoData }) => {
       return { todoData: this.toggleProperty(todoData, id, 'important') };
     });
   }
 
+  search = (items, term) => {
+    if (term.length === 0) {
+      return items;
+    }
+    return items.filter(({ label }) => {
+      return label.toLowerCase().indexOf(term.toLowerCase()) > -1;
+    })
+  }
+
+  filter = (items, filter)=> {
+    switch (filter) {
+      case 'all':
+        return items;
+      case 'active':
+        return items.filter((item) => !item.done)
+      case 'done':
+        return items.filter((item) => item.done)
+      default:
+        return items;
+    }
+  }
+
+  setFilter = (filter) => {
+    this.setState({ filter: filter });
+  }
+
+  onTermChange = (term) => {
+    this.setState({ term: term });
+  }
+
   onToggleDone = (id) => {
-    this.setState(({todoData}) => {
+    this.setState(({ todoData }) => {
       return { todoData: this.toggleProperty(todoData, id, 'done') };
     });
   }
@@ -56,18 +88,20 @@ export default class App extends Component {
   };
 
   render() {
-    const { todoData} = this.state;
-    const doneCount = todoData.filter(x=>x.done).length;
+    const { todoData, term, filter } = this.state;
+    const visibleItems = this.filter(this.search(todoData, term), filter);
+
+    const doneCount = todoData.filter(x => x.done).length;
     const todoCount = todoData.length - doneCount;
 
     return (
       <div className="todo-app">
         <AppHeader toDo={todoCount} done={doneCount} />
         <div className="top-panel d-flex">
-          <SearchPanel />
-          <ItemStatusFilter />
+          <SearchPanel onTermChange={this.onTermChange} />
+          <ItemStatusFilter filter={filter} onFilterChange={this.setFilter} />
         </div>
-        <TodoList todos={todoData}
+        <TodoList todos={visibleItems}
           onDeleted={this.deleteItem}
           onToggleImportant={this.onToggleImportant}
           onToggleDone={this.onToggleDone} />
