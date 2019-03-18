@@ -25,21 +25,21 @@ export default class SwapiService {
     }
 
     async getPerson(id) {
-        return await this.getResource(`${this._baseUrl}/people/${id}`)
+        const person = await this.getResource(`${this._baseUrl}/people/${id}`);
+        return this._transformPerson(person);
     }
 
     async getPlanet(id) {
         const planet = await this.getResource(`${this._baseUrl}/planets/${id}`);
-        this._transformPlanet(planet);
-
         return this._transformPlanet(planet);
     }
 
     async getStarship(id) {
-        return await this.getResource(`${this._baseUrl}/starships/${id}`)
+        const starship = await this.getResource(`${this._baseUrl}/starships/${id}`);
+        return  this._transformStarship(starship);
     }
 
-    _transformPlanet(planet) {
+    _transformPlanet = (planet) => {
         return  {
             id: this._extractId(planet.url),
             name: planet.name, 
@@ -49,7 +49,7 @@ export default class SwapiService {
           }
     }
 
-    _transformStarship(starship) {
+    _transformStarship = (starship) => {
         return  {
             id: this._extractId(starship.url),
             name: starship.name, 
@@ -63,7 +63,7 @@ export default class SwapiService {
           }
     }
 
-    _transformPerson(person) {
+    _transformPerson = (person) => {
         return  {
             id: this._extractId(person.url),
             name: person.name, 
