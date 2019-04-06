@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import ItemList from '../item-list/item-list';
-import PersonDetails from '../item-details/item-details';
+import ItemDetails from '../item-details/item-details';
 import ErrorBoundry from '../error-boundry';
 import Row from '../row'
 import './people-page.css';
@@ -27,7 +27,7 @@ export default class PeoplePage extends Component {
       {(i) => `${i.name} (${i.birthYear})`}
     </ItemList>;
 
-    const personDetails = <PersonDetails personId={this.state.selectedPerson} />;
+    const personDetails = <ItemDetails personId={this.state.selectedPerson} />;
 
     return (
       <ErrorBoundry>

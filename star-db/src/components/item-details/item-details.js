@@ -1,71 +1,67 @@
 import React, { Component } from 'react';
-
 import './item-details.css';
-import SwapiService from "../../services/swapi-service";
 import ErrorButton from "../error-button/error-button";
 
-export default class PersonDetails extends Component {
+const Record = ({ item, field, label }) => {
+  return (
+    <li className="list-group-item">
+      <span className="term">{label}</span>
+      <span>{item[field]}</span>
+    </li>
+  );
+};
 
-  swapiService = new SwapiService();
+export { Record };
+
+export default class ItemDetails extends Component {
 
   state = {
-    person: null
+    item: null,
+    image: null
   };
 
   componentDidMount() {
-    this.updatePerson();
+    this.updateItem();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.personId !== prevProps.personId) {
-      this.updatePerson();
+    if (this.props.itemId !== prevProps.itemId) {
+      this.updateItem();
     }
   }
 
-  updatePerson() {
-    const { personId } = this.props;
-    if (!personId) {
+  async updateItem() {
+    const { itemId, getData, getImageUrl } = this.props;
+    if (!itemId) {
       return;
     }
 
-    this.swapiService
-      .getPerson(personId)
-      .then((person) => {
-        this.setState({ person });
-      });
+    const itemDetails = await getData(itemId);
+    const image = await getImageUrl(itemDetails)
+    this.setState({ item: itemDetails, image });
   }
 
   render() {
 
-    const { person } = this.state;
-    if (!person) {
-      return <span>Select a person from a list</span>;
+    const { item, image } = this.state;
+    if (!item) {
+      return <span>Select an item from a list</span>;
     }
 
-    const { id, name, gender,
-              birthYear, eyeColor } = person;
+    const { name } = item;
 
     return (
       <div className="item-details card">
         <img className="item-image"
-          src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`}
-          alt="character"/>
+          src={image}
+          alt={name} />
 
         <div className="card-body">
           <h4>{name}</h4>
           <ul className="list-group list-group-flush">
-            <li className="list-group-item">
-              <span className="term">Gender</span>
-              <span>{gender}</span>
-            </li>
-            <li className="list-group-item">
-              <span className="term">Birth Year</span>
-              <span>{birthYear}</span>
-            </li>
-            <li className="list-group-item">
-              <span className="term">Eye Color</span>
-              <span>{eyeColor}</span>
-            </li>
+            { React.Children.map(this.props.children, (child) => {
+              return React.cloneElement(child, { item });
+            })}
           </ul>
           <ErrorButton />
         </div>

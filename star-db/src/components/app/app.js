@@ -5,9 +5,11 @@ import RandomPlanet from '../random-planet';
 import ErrorButton from '../error-button';
 import ErrorIndicator from '../error-indicator';
 import PeoplePage from '../people-page';
-
+import ItemDetails, { Record } from '../item-details';
+import { PersonList, PlanetList, StarshipList, PersonDetails, StarshipDetails, PlanetDetails } from '../sw-components';
 import './app.css';
 import SwapiService from '../../services/swapi-service';
+import Row from '../row';
 
 export default class App extends Component {
 
@@ -37,24 +39,38 @@ export default class App extends Component {
     }
 
     const planet = this.state.showRandomPlanet ?
-      <RandomPlanet/> :
+      <RandomPlanet /> :
       null;
+
+    const personDetails = (<ItemDetails itemId={11} getData={this.swapiService.getPerson} getImageUrl={this.swapiService.getPersonImage}>
+      <Record field="gender" label="Gender"></Record>
+      <Record field="birthYear" label="Birth Year"></Record>
+      <Record field="eyeColor" label="Eye Color"></Record>
+    </ItemDetails>);
+
+    const starshipDetails = (
+    <ItemDetails itemId={5} getData={this.swapiService.getStarship} getImageUrl={this.swapiService.getStarshipImage}>
+      <Record field="model" label="Model"></Record>
+      <Record field="manufacturer" label="Manufacturer"></Record>
+      <Record field="costInCredits" label="Cost In Credits"></Record>
+      <Record field="length" label="Length"></Record>
+      <Record field="crew" label="Crew"></Record>
+    </ItemDetails>);
 
     return (
       <div className="stardb-app">
         <Header />
-        { planet }
+        <PersonList/>
 
-        <div className="row mb2 button-row">
-          <button
-            className="toggle-planet btn btn-warning btn-lg"
-            onClick={this.toggleRandomPlanet}>
-            Toggle Random Planet
-          </button>
-          <ErrorButton />
-        </div>
+        <PlanetList/>
 
-        <PeoplePage />
+        <StarshipList/>
+
+        <PersonDetails itemId="1"></PersonDetails>
+        <StarshipDetails itemId="11"></StarshipDetails>
+        <PlanetDetails itemId="10"></PlanetDetails>
+        
+        {/* <Row left={personDetails} right={starshipDetails}></Row> */}
 
       </div>
     );
